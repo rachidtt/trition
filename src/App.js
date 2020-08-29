@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{Component} from 'react';
 import './App.css';
+import Balance from './Components/Balance'
+import FoodSlide from './Components/FoodSlide'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component{
+
+  constructor(){
+    super()
+    this.state = {
+      caloriesGoal: 2500,
+      caloriesConsumed: 0
+    }
+    this.addConsumed = this.addConsumed.bind(this)
+  }
+
+  addConsumed(Cal){
+    this.setState((prevState) => ({ caloriesConsumed: prevState.caloriesConsumed + Cal }))
+  }
+
+  
+  render(){
+    return(
+      <div>
+        <Balance goal={this.state.caloriesGoal} consumed={this.state.caloriesConsumed}/>
+        <br/>
+        <FoodSlide addConsumed = {this.addConsumed}/>
+
+      </div>
+    )
+  }
+
 }
 
-export default App;
+export default App
