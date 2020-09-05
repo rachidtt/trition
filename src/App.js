@@ -3,6 +3,7 @@ import './App.css';
 import Balance from './Components/Balance'
 import FoodSlide from './Components/FoodSlide'
 
+import mock from './mock.json' //mock json fetch
 
 class App extends Component{
 
@@ -19,6 +20,9 @@ class App extends Component{
     this.setState((prevState) => ({ caloriesConsumed: prevState.caloriesConsumed + Cal }))
   }
 
+  componentDidMount(){
+    console.log(mock) //mock json fetch
+  }
   
   render(){
     return(

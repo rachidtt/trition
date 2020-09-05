@@ -4,7 +4,7 @@ import './Balance.css'
 function Balance(props){
     let balance = props.goal - props.consumed 
     let balanceColor = balance>0?{color: "green"}:{color: "red"}
-    if(balance == 0) balanceColor={color: "grey"}
+    if(balance === 0) balanceColor={color: "grey"}
 
     return(
         <div >
