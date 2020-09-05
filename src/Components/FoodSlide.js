@@ -54,12 +54,18 @@ class FoodSlide extends Component{
 
      handleRemove = (cal,id) => {
         this.props.addConsumed(-cal)
-
+        /*
         this.setState(prevState => ({
             breakfastChildren: prevState.breakfastChildren.splice(id,0)
 
             
-          }))
+          }))*/
+        let items = this.state.breakfastChildren
+        let i = items.findIndex(item => item.id === id)
+        items.splice(i,1)
+        this.setState({
+            breakfastChildren: items
+        })
 
     }
 
@@ -72,19 +78,19 @@ class FoodSlide extends Component{
 
         this.setState(prevState => ({
             breakfastChildren: [
-                                ...prevState.breakfastChildren,
-                                 <Food 
-                                    calories = {data.get('calories1')} 
-                                    name={data.get('foodname1')} 
-                                    id={this.state.breakfastChildrenNumber}
-                                    rm = {this.handleRemove}/>]
+                                ...prevState.breakfastChildren,{
+                                    calories: data.get('calories1') ,
+                                    name:data.get('foodname1'), 
+                                    id: this.state.breakfastChildrenNumber,
+                                    rm: this.handleRemove
+                                }]
           }))
 
           this.setState(prevState => ({
             breakfastChildrenNumber: prevState.breakfastChildrenNumber + 1
         }))
 
-        
+        console.log(this.state.breakfastChildren)
 
         this.props.addConsumed(parseInt(data.get('calories1')))
         document.getElementById('breakfastForm').reset()//Clears the form
@@ -107,7 +113,10 @@ class FoodSlide extends Component{
                 </form>
 
 
-                {this.state.breakfastChildren}
+                {/*}{this.state.breakfastChildren}{*/}
+                {this.state.breakfastChildren.map( entry => (
+                    <Food name={entry.name} calories={entry.calories} id={entry.id} rm={entry.rm}  key={entry.id} />
+                ))}
 
                 <br/>
                 <h2> Lunch: </h2>
