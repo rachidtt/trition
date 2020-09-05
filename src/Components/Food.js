@@ -4,7 +4,7 @@ import React from 'react'
 function Food(props){
 
     const handleRemove = () => {
-        props.rm(props.calories, props.id)
+        props.rm(props.calories, props.id, props.meal)
     }
 
     return(

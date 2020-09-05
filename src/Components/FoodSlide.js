@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Food from './Food'
+import FoodForm from './FoodForm'
 
 
 
@@ -11,61 +12,40 @@ class FoodSlide extends Component{
             breakfastChildren: [],
             lunchChildren: [],
             dinnerChildren: [],
-            breakfastChildrenNumber: 0
+            foodnNumber: 0,
 
         }
-
-        this.handleBreakfast = this.handleBreakfast.bind(this)
-        this.handleLunch = this.handleLunch.bind(this)
-        this.handleDinner = this.handleDinner.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        
+        this.handleSubmit = this.handleSubmit.bind(this)   
     }
 
-    handleBreakfast(event){
-        event.preventDefault();//prevents page refresh
-
-        this.props.addConsumed(500)
-
-        this.setState(prevState => ({
-            breakfastChildren: [...prevState.breakfastChildren, <Food/>]
-          }))
-
-    }
-
-    handleLunch(){
-        this.props.addConsumed(500)
-
-        this.setState(prevState => ({
-            lunchChildren: [...prevState.lunchChildren, <Food/>]
-          }))
-
-    }
-
-    handleDinner(){
-        this.props.addConsumed(500)
-
-        this.setState(prevState => ({
-            dinnerChildren: [...prevState.dinnerChildren, <Food/>]
-          }))
-
-    }
-
-
-     handleRemove = (cal,id) => {
+     handleRemove = (cal,id, meal) => {
         this.props.addConsumed(-cal)
-        /*
-        this.setState(prevState => ({
-            breakfastChildren: prevState.breakfastChildren.splice(id,0)
 
-            
-          }))*/
-        let items = this.state.breakfastChildren
-        let i = items.findIndex(item => item.id === id)
-        items.splice(i,1)
-        this.setState({
-            breakfastChildren: items
-        })
+        if(meal === "breakfast"){
+            let items = this.state.breakfastChildren
+            let i = items.findIndex(item => item.id === id)
+            items.splice(i,1)
+            this.setState({
+                breakfastChildren: items
+             })
+        }
+        if(meal === "lunch"){
+            let items = this.state.lunchChildren
+            let i = items.findIndex(item => item.id === id)
+            items.splice(i,1)
+            this.setState({
+                lunchChildren: items
+             })
+        }
+        if(meal === "dinner"){
+            let items = this.state.dinnerChildren
+            let i = items.findIndex(item => item.id === id)
+            items.splice(i,1)
+            this.setState({
+                dinnerChildren: items
+             })
+        }
+
 
     }
 
@@ -74,27 +54,59 @@ class FoodSlide extends Component{
     handleSubmit(event) {
         event.preventDefault();//prevent page refresh
         const data = new FormData(event.target);// then reference by form input's `name` tag
+        let meal = event.target.name
 
+        if(meal === "breakfastForm" ){
+            this.setState(prevState => ({
+                breakfastChildren: [
+                                    ...prevState.breakfastChildren,{
+                                        calories: data.get('calories1') ,
+                                        name:data.get('foodname1'), 
+                                        id: this.state.foodnNumber,
+                                        rm: this.handleRemove
+                                    }]
+              }))
+              this.setState(prevState => ({
+                foodnNumber: prevState.foodnNumber + 1
+            }))
+            this.props.addConsumed(parseInt(data.get('calories1')))//Adds calories to your daily
+            document.getElementById('breakfastForm').reset()//Clears the form
+        }
 
-        this.setState(prevState => ({
-            breakfastChildren: [
-                                ...prevState.breakfastChildren,{
-                                    calories: data.get('calories1') ,
-                                    name:data.get('foodname1'), 
-                                    id: this.state.breakfastChildrenNumber,
-                                    rm: this.handleRemove
-                                }]
-          }))
+        else if(meal === "lunchForm" ){
+            this.setState(prevState => ({
+                lunchChildren: [
+                                    ...prevState.lunchChildren,{
+                                        calories: data.get('calories1') ,
+                                        name:data.get('foodname1'), 
+                                        id: this.state.foodnNumber,
+                                        rm: this.handleRemove
+                                    }]
+              }))
+              this.setState(prevState => ({
+                foodnNumber: prevState.foodnNumber + 1
+            }))
+            this.props.addConsumed(parseInt(data.get('calories1')))//Adds calories to your daily
+            document.getElementById('lunchForm').reset()//Clears the form
 
-          this.setState(prevState => ({
-            breakfastChildrenNumber: prevState.breakfastChildrenNumber + 1
-        }))
+        }
 
-        console.log(this.state.breakfastChildren)
-
-        this.props.addConsumed(parseInt(data.get('calories1')))
-        document.getElementById('breakfastForm').reset()//Clears the form
-
+        else if(meal === "dinnerForm" ){
+            this.setState(prevState => ({
+                dinnerChildren: [
+                                    ...prevState.dinnerChildren,{
+                                        calories: data.get('calories1') ,
+                                        name:data.get('foodname1'), 
+                                        id: this.state.foodnNumber,
+                                        rm: this.handleRemove
+                                    }]
+              }))
+              this.setState(prevState => ({
+                foodnNumber: prevState.foodnNumber + 1
+            }))
+            this.props.addConsumed(parseInt(data.get('calories1')))//Adds calories to your daily
+            document.getElementById('dinnerForm').reset()//Clears the form
+        }
     }
 
 
@@ -105,29 +117,25 @@ class FoodSlide extends Component{
         return(
             <div >
                 <h2> Breakfast: </h2>
-
-                <form id= "breakfastForm" onSubmit={this.handleSubmit}>
-                    <input id="foodname1" name="foodname1" type="text" placeholder="Food Name"/>
-                    <input id="calories1" name="calories1" type="text" placeholder="Calories"/>
-                    <button>Add Food</button>
-                </form>
-
-
-                {/*}{this.state.breakfastChildren}{*/}
+                <FoodForm id= "breakfastForm" onSubmit={this.handleSubmit} name="breakfastForm"/>
                 {this.state.breakfastChildren.map( entry => (
-                    <Food name={entry.name} calories={entry.calories} id={entry.id} rm={entry.rm}  key={entry.id} />
+                    <Food name={entry.name} calories={entry.calories} id={entry.id} rm={entry.rm}  key={entry.id} meal ="breakfast" />
                 ))}
-
                 <br/>
+
                 <h2> Lunch: </h2>
-                {this.state.lunchChildren}
-                <button onClick= {this.handleLunch}>Add Food</button>
+                <FoodForm id= "lunchForm" onSubmit={this.handleSubmit} name="lunchForm"/>
+                {this.state.lunchChildren.map( entry => (
+                    <Food name={entry.name} calories={entry.calories} id={entry.id} rm={entry.rm}  key={entry.id} meal ="lunch"/>
+                ))}
                 <br/>
+
                 <h2> Dinner: </h2>
-                {this.state.dinnerChildren}
-                <button onClick= {this.handleDinner}>Add Food</button>
-
-
+                <FoodForm id= "dinnerForm" onSubmit={this.handleSubmit} name="dinnerForm"/>
+                {this.state.dinnerChildren.map( entry => (
+                    <Food name={entry.name} calories={entry.calories} id={entry.id} rm={entry.rm}  key={entry.id} meal ="dinner"/>
+                ))}
+                
             </div>
         )
 
